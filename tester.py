@@ -23,10 +23,10 @@ connection.request('GET', '/1/classes/Match', '', {
                 "X-Parse-REST-API-Key": apiKey 
                      })
 parse = json.loads(connection.getresponse().read())
-singleMatch = parse["results"]
+singleMatch = parse['results']
 
 def setupUsers():
-  usersList= []
+  usersList = []
   try:
     for i in singleMatch:
       player1 = i["player1"]["objectId"]
@@ -38,13 +38,16 @@ def setupUsers():
       if [player2] not in usersList:
         usersList.append([player2])
   except KeyError:
-    pass
+    print "Keyerror"
+
    # Setup the list to contain records with initialized 6 zeroes
   for i in usersList:
     i.extend([0,0,0,0,0,0])
+
   return usersList 
 
 def calculateResults(usersList):
+
   ''' 
   Add results in a list for each player. List follows (p, w, l, d, f, c) format where:
   p = Number of games played
@@ -57,30 +60,30 @@ def calculateResults(usersList):
   for i in singleMatch:
     player1 = i["player1"]["objectId"]
     player2 = i["player2"]["objectId"]
-    gameStatus = i["status"]
-    for k  in range(0, len(usersList)):
+    for idx, item  in enumerate(usersList):
       # Player 1 Results
-      if player1 == usersList[k][0] and gameStatus == "accept":
-        usersList[k][1] += 1 # Calculate number of games
-        usersList[k][5] += i["score1"] # Calculate goals scored
-        usersList[k][6] += i["score2"] # Calculate goals conceded
+      if player1 == usersList[idx][0] and singleMatch[idx]["status"] == "accept":
+        usersList[idx][1] += 1 # Calculate number of games
+        usersList[idx][5] += i["score1"] # Calculate goals scored
+        usersList[idx][6] += i["score2"] # Calculate goals conceded
         if i["score1"] > i["score2"]:
-          usersList[k][2] += 1 # Calculate wins 
+          usersList[idx][2] += 1 # Calculate wins 
         elif i["score1"] < i["score2"]:
-          usersList[k][3] += 1 # Calculate losses
+          usersList[idx][3] += 1 # Calculate losses
         else:
-          usersList[k][4] += 1 # Calculate draws 
+          usersList[idx][4] += 1 # Calculate draws 
+
       # Player 2 Results
-      if i["player2"]["objectId"] == usersList[k][0] and gameStatus == "accept":
-        usersList[k][1] += 1 # Calculate number of games
-        usersList[k][5] += i["score2"] # Calculate goals scored
-        usersList[k][6] += i["score1"] # Calculate goals conceded
+      if i["player2"]["objectId"] == usersList[idx][0] and singleMatch[idx]["status"] == "accept":
+        usersList[idx][1] += 1 # Calculate number of games
+        usersList[idx][5] += i["score2"] # Calculate goals scored
+        usersList[idx][6] += i["score1"] # Calculate goals conceded
         if i["score2"] > i["score1"]:
-          usersList[k][2] += 1 # Calculate wins 
+          usersList[idx][2] += 1 # Calculate wins 
         elif i["score2"] < i["score1"]:
-          usersList[k][3] += 1 # Calculate losses
+          usersList[idx][3] += 1 # Calculate losses
         else:
-          usersList[k][4] += 1 # Calculate draws 
+          usersList[idx][4] += 1 # Calculate draws 
   return usersList 
 
 def calculateHeadToHead():
