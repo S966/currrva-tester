@@ -68,42 +68,66 @@ class calculateResults(object):
       return True
 
   def getPlayer(self, player, match):
-    if player[0] == match["player1"]["objectId"]:
-      return "player1"
-    if player[0] == match["player2"]["objectId"]:
-      return "player2"
+    if player == match["player1"]["objectId"]:
+      print "player1"
+    if player == match["player2"]["objectId"]:
+      print "player2"
+
     else:
       return False
 
-  def didWin(self, player, user, match):
-    if player == "player1" and match["score1"] > match["score2"]:
-      user[2] += 1
-    if player == "player2" and match["score2"] > match["score1"]:
-      user[2] += 1
+  def calculatePlayed(self, player1, player2):
+    for idx, user in enumerate(usersList):
+      if user[0] == player1 or user[0] == player2:
+        usersList[idx][1] += 1 
 
-  def didLose(self, player, user, match):
-    if player == "player1" and match["score1"] < match["score2"]:
-      user[3] += 1
-    if player == "player2" and match["score2"] < match["score1"]:
-      user[3] += 1
+  def calculateResult(self, match, player1, player2):
+      if match["score1"] > match["score2"]:
+        usersList[player1][2] += 1 # Win
+        usersList[player2][3] += 1 # Loss
+      elif match["score1"] < match["score2"]:
+        usersList[player1][3] += 1 #Loss
+        usersList[player2][2] += 1 # Win
+      else:
+        usersList[player2][4] += 1 
+        usersList[player2][4] += 1
 
-  def didDraw(self, user, match):
-    if match["score1"] == match["score2"]:
-      user[4] += 1
+  def calculateFor(object):
+    usersList[object][5] += i["score1"] 
 
-  def didScore(self, player, user, match):
-    if player == "player1":
-      user[5] += match["score1"] 
-    if player == "player2":
-      user[5] += match["score2"] 
+  def calculateConceded(object):
+    usersList[object][6] += i["score2"] 
 
-  def didConcede(self, player, user, match):
-    if player == "player1":
-      user[6] += match["score2"] 
-    if player == "player2":
-      user[6] += match["score1"] 
 
-class calculateHeadToHead(object):
+#  def calculateResults(usersList):
+#      for idx, item  in enumerate(usersList):
+#        # Player 1 Results
+#        if player1 == usersList[idx][0] and singleMatch[idx]["status"] == "accept":
+#          usersList[idx][1] += 1 # Calculate number of games
+#          usersList[idx][5] += i["score1"] # Calculate goals scored
+#          usersList[idx][6] += i["score2"] # Calculate goals conceded
+#          if i["score1"] > i["score2"]:
+#            usersList[idx][2] += 1 # Calculate wins 
+#          elif i["score1"] < i["score2"]:
+#            usersList[idx][3] += 1 # Calculate losses
+#          else:
+#            usersList[idx][4] += 1 # Calculate draws 
+#
+#        # Player 2 Results
+#        if i["player2"]["objectId"] == usersList[idx][0] and singleMatch[idx]["status"] == "accept":
+#          usersList[idx][1] += 1 # Calculate number of games
+#          usersList[idx][5] += i["score2"] # Calculate goals scored
+#          usersList[idx][6] += i["score1"] # Calculate goals conceded
+#          if i["score2"] > i["score1"]:
+#            usersList[idx][2] += 1 # Calculate wins 
+#          elif i["score2"] < i["score1"]:
+#            usersList[idx][3] += 1 # Calculate losses
+#          else:
+#            usersList[idx][4] += 1 # Calculate draws 
+#    return usersList 
+
+
+def calculateHeadToHead():
   pass
 
 def prettify(table_data):
@@ -126,22 +150,25 @@ def main():
   usersList = setupUsers(allMatches)
   
   calculate = calculateResults()
+  
+
   for user in usersList:
     for match in allMatches:
-      player = calculate.getPlayer(user, match)
-      if player != False:
-        # print match["objectId"], " : ", user[0] , " is", player 
+      print calculate.getPlayer(user, match)
+      if user == calculate.getPlayer(user,match):
         try:
           if calculate.isAccepted(match["status"]):
-            calculate.didWin(player, user, match)
-            calculate.didLose(player, user, match)
-            calculate.didDraw(user, match)
-            calculate.didScore(player, user, match)
-            calculate.didConcede(player, user, match)
-            
+            print "yay"
+            #calculate.calculatePlayed(player1, player2)
+            #calculate.calculateResult(match, player1, player2)
+
+                
         except KeyError:
           pass
-  prettify(usersList)
+    
+  # fullRecordList = calculateResults(usersList)
+  # prettify(fullRecordList)
+
 
 if __name__ == "__main__":
   main()
