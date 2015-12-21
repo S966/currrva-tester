@@ -75,6 +75,12 @@ class calculateResults(object):
     else:
       return False
 
+  def didPlay(self, player, user):
+    if player == "player1" or player == "player2":
+      user[1] += 1
+
+
+
   def didWin(self, player, user, match):
     if player == "player1" and match["score1"] > match["score2"]:
       user[2] += 1
@@ -133,6 +139,7 @@ def main():
         # print match["objectId"], " : ", user[0] , " is", player 
         try:
           if calculate.isAccepted(match["status"]):
+            calculate.didPlay( player, user)
             calculate.didWin(player, user, match)
             calculate.didLose(player, user, match)
             calculate.didDraw(user, match)
